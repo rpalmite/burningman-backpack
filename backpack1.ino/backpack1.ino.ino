@@ -7,10 +7,11 @@
  #include <avr/power.h>
 #endif
 
-#define PIN 0
+#define LEFT_EYE_PIN 0
+#define RIGHT_EYE_PIN 1
 
-Adafruit_NeoPixel neopixel1 = Adafruit_NeoPixel(32, PIN); // left eyeball
-Adafruit_NeoPixel neopixel2 = Adafruit_NeoPixel(32, 1); // right eyeball
+Adafruit_NeoPixel neopixel1 = Adafruit_NeoPixel(32, LEFT_EYE_PIN); // left eyeball
+Adafruit_NeoPixel neopixel2 = Adafruit_NeoPixel(32, RIGHT_EYE_PIN); // right eyeball
 
 uint8_t  mode   = 0, // Current animation effect
          offset = 0; // Position of spinny eyes
@@ -79,3 +80,6 @@ void loop() {
     prevTime = t;
   }
 }
+
+
+408-784-5116
