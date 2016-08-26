@@ -16,7 +16,7 @@
 
 // Number of LEDs in strip
 #define NUMPIXELS 20
-#define PIXEL_PER_NEOPIXEL_RING 32
+#define PIXEL_PER_NEOPIXEL_RING 16
 
 // define gpio pins
 #define LEFT_EYE_PIN 3
@@ -32,7 +32,7 @@ Adafruit_DotStar lips = Adafruit_DotStar(NUMPIXELS, LIPS_DATAPIN, LIPS_CLOCKPIN,
 
 // lower is faster
 //20 milliseconds (~50 FPS)
-#define SPEED_DELAY_MS 10
+#define SPEED_DELAY_MS 18
 
 void setup() {
 
@@ -62,8 +62,7 @@ uint32_t color = lips.Color(255, 0, 0);      // 'On' color (starts red)
 #define OFF_COLOR lips.Color(0, 0, 0)
 
 #define INTIAL_STEP 1
-int step = INTIAL_STEP;
-int direction = 1;
+
 
 // colors
 int red = 255;
@@ -74,6 +73,12 @@ int blue = 0;
 
 // implement color change frequency (skip some iterations of movement)
 #define COLOR_CHANGE_FREQUENCY 2
+
+int step = INTIAL_STEP;
+int direction = 1;
+
+
+int eyeStep = 1;
 
 void loop() {
   // refresh lights
@@ -92,9 +97,18 @@ void loop() {
     direction = 1;
   }
 
-  nextStep();
+  nextStepLips();
+  
+  step = step + direction;
 
-  step = step + direction; 
+  if (eyeStep == PIXEL_PER_NEOPIXEL_RING) {
+    eyeStep = 0;
+  } else {
+    eyeStep++;
+  }
+  
+  nextStepEyes();
+  
 }
 
 
@@ -112,35 +126,6 @@ void nextStepLips() {
   if (direction < 0) {
       lips.setPixelColor(step+TAIL_LENGTH, OFF_COLOR);     // 'Off' pixel at tail
   }
-
-
-  int i = step % PIXEL_PER_NEOPIXEL_RING;
-
-  // left eye
-//  for(int j=0; j<32; j++) {
-//        left_eye.setPixelColor(j, 0);
-//        left_eye.setPixelColor(j, 0);
-//  }
-  left_eye.setPixelColor(i, color);
-  left_eye.setPixelColor(PIXEL_PER_NEOPIXEL_RING-1-i, color);
-
-  // trailing color black
-  if (direction > 0) {
-       left_eye.setPixelColor(i-1, OFF_COLOR);
-       left_eye.setPixelColor(PIXEL_PER_NEOPIXEL_RING-1-i-1, OFF_COLOR);
-  }
-  if (direction < 0) {
-       left_eye.setPixelColor(i+1, OFF_COLOR);
-       left_eye.setPixelColor(PIXEL_PER_NEOPIXEL_RING-1-i+1, OFF_COLOR);
-  }
-  //left_eye.setPixelColor(i-1, OFF_COLOR);
-  //left_eye.setPixelColor(PIXEL_PER_NEOPIXEL_RING-1-i-1, OFF_COLOR);
-  //setEye(left_eye, i, color);
-  
-  // right eye
-  right_eye.setPixelColor(i, color);
-  right_eye.setPixelColor(PIXEL_PER_NEOPIXEL_RING-1-i, color);
-  //setEye(right_eye, i, color);
   
   // color change
   interateColor();
@@ -149,6 +134,36 @@ void nextStepLips() {
   //if((color >>= 8) == 0)   {  //  Next color (R->G->B) ... past blue now?
   //    color = strip.Color(red, green, blue); // red
   //}
+}
+
+void nextStepEyes() {
+   int i = eyeStep % PIXEL_PER_NEOPIXEL_RING;
+
+  // left eye
+  //left_eye.setPixelColor(eyeStep, color);
+  //left_eye.setPixelColor(PIXEL_PER_NEOPIXEL_RING-1-eyeStep, color);
+
+  // trailing color black
+  //if (eyeStep == 0) {
+  //    left_eye.setPixelColor(PIXEL_PER_NEOPIXEL_RING-1, OFF_COLOR);
+  //} else {
+  //    left_eye.setPixelColor(eyeStep-TAIL_LENGTH, OFF_COLOR);
+  //}
+  //left_eye.setPixelColor(PIXEL_PER_NEOPIXEL_RING-1-eyeStep-1, OFF_COLOR);
+
+   // right eye
+  left_eye.setPixelColor(i, color);
+  left_eye.setPixelColor(PIXEL_PER_NEOPIXEL_RING-1-i, color);
+  //setEye(right_eye, i, color);
+  left_eye.setBrightness(BRIGHTNESS+(step));
+
+  
+  // right eye
+  right_eye.setPixelColor(i, color);
+  right_eye.setPixelColor(PIXEL_PER_NEOPIXEL_RING-1-i, color);
+  //setEye(right_eye, i, color);
+  right_eye.setBrightness(BRIGHTNESS+(step));
+  
 }
 
 
