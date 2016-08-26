@@ -7,8 +7,8 @@
  #include <avr/power.h>
 #endif
 
-#define LEFT_EYE_PIN 0
-#define RIGHT_EYE_PIN 1
+#define LEFT_EYE_PIN 3
+#define RIGHT_EYE_PIN 4
 
 Adafruit_NeoPixel neopixel1 = Adafruit_NeoPixel(32, LEFT_EYE_PIN); // left eyeball
 Adafruit_NeoPixel neopixel2 = Adafruit_NeoPixel(32, RIGHT_EYE_PIN); // right eyeball
@@ -82,4 +82,4 @@ void loop() {
 }
 
 
-408-784-5116
+// 408-784-5116

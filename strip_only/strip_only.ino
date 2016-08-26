@@ -11,11 +11,12 @@
 //#include <SPI.h>         // COMMENT OUT THIS LINE FOR GEMMA OR TRINKET
 #include <avr/power.h> // ENABLE THIS LINE FOR GEMMA OR TRINKET
 
-#define NUMPIXELS 72 // Number of LEDs in strip
+ // Number of LEDs in strip
+#define NUMPIXELS 72
 
 // Here's how to control the LEDs from any two pins:
-#define DATAPIN 0
-#define CLOCKPIN 1
+#define DATAPIN    0
+#define CLOCKPIN   1
 Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BRG);
 // The last parameter is optional -- this is the color data order of the
 // DotStar strip, which has changed over time in different production runs.
@@ -28,7 +29,7 @@ Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_
 
 // lower is faster
 //20 milliseconds (~50 FPS)
-#define SPEED_DELAY_MS 200
+#define SPEED_DELAY_MS 10
 
 void setup() {
 
@@ -38,7 +39,7 @@ void setup() {
 
   strip.begin(); // Initialize pins for output
 
-  strip.setBrightness(20); // 1/3 brightness
+  strip.setBrightness(10); // 1/3 brightness
 
   strip.show();  // Turn all LEDs off ASAP
 }
@@ -54,6 +55,12 @@ uint32_t color = strip.Color(255, 0, 0);      // 'On' color (starts red)
 #define INTIAL_STEP 1
 int step = INTIAL_STEP;
 int direction = 1;
+
+// colors
+int red = 255;
+int green = 0;
+int blue = 0;
+#define COLOR_INCREMENT 1
 
 void loop() {
   // refresh strip
@@ -83,6 +90,7 @@ void nextStep() {
   // move leds over 1 position
 
   // turn head onto current color
+  color = strip.Color(red, blue, green);
   strip.setPixelColor(step, color); // 'On' pixel at head
 
   if (direction > 0) {
@@ -94,14 +102,31 @@ void nextStep() {
       strip.setPixelColor(step+TAIL_LENGTH, OFF_COLOR);     // 'Off' pixel at tail
   }
 
+  if (red > 0 && blue == 0) {
+    red = red - COLOR_INCREMENT;
+    green = green + COLOR_INCREMENT;
+  }
+  if (green > 0 && red == 0) {
+    green = green - COLOR_INCREMENT;
+    blue = blue + COLOR_INCREMENT;
+  }
+  if (blue > 0 && green == 0) {
+    red = red + COLOR_INCREMENT;
+    blue = blue - COLOR_INCREMENT;
+  }
+
+  // color change
+  //if((color >>= 8) == 0)   {  //  Next color (R->G->B) ... past blue now?
+  //    color = strip.Color(red, green, blue); // red
+  //}
 }
 
 
 void nextLine() {
     // color change
-    if((color >>= 8) == 0)   {  //  Next color (R->G->B) ... past blue now?
-        color = strip.Color(255, 0, 0); // red
-    }
+    //if((color >>= 8) == 0)   {  //  Next color (R->G->B) ... past blue now?
+    //    color = strip.Color(255, 0, 0); // red
+    //}
 
 }
 
@@ -109,5 +134,20 @@ void nextLine() {
 // http://codepen.io/Codepixl/pen/ogWWaK/
 // try changing the colors one step (led) at a time
 
+
+//
+// if(r > 0 && b == 0){
+//    r--;
+//    g++;
+//  }
+//  if(g > 0 && r == 0){
+//    g--;
+//    b++;
+//  }
+//  if(b > 0 && g == 0){
+//    r++;
+//    b--;
+//  }
+ 
 
 
